@@ -28,11 +28,10 @@
 #include "WProgram.h"
 #endif
 
-//
-//#if(NETWORK_ESP8266_SD == DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266)
-//	#define ESP8266_GT_2_4_2_SD_STORAGE_SELECTED
-//	#define DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266 NETWORK_ESP8266
-//#endif
+#ifndef DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP32
+	#define DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP32 		NETWORK_ESP32
+	#define DEFAULT_STORAGE_TYPE_ESP32 			STORAGE_LITTLEFS
+#endif
 
 #if !defined(FTP_SERVER_NETWORK_TYPE)
 // select Network type based
@@ -319,15 +318,15 @@
 #ifdef ESP32
 	#if ESP_ARDUINO_VERSION_MAJOR >= 2
 			#include "FS.h"
-			#include "LittleFS.h"
-			#define STORAGE_MANAGER LittleFS
+			#include "PSRamFS.h"
+			#define STORAGE_MANAGER PSRamFS
 	#else
-			#include "LITTLEFS.h"
+			//#include "LITTLEFS.h"
 			#define STORAGE_MANAGER LITTLEFS
 	#endif
 #else
-	#include "LittleFS.h"
-	#define STORAGE_MANAGER LittleFS
+	//#include "LittleFS.h"
+	#define STORAGE_MANAGER PSRamFS
 #endif
 		#define FTP_FILE File
 		#define FTP_DIR File
@@ -479,6 +478,7 @@
 #define OPEN_CLOSE_SD
 
 // Setup debug printing macros.
+#define FTP_ADDITIONAL_DEBUG
 #ifdef FTP_SERVER_DEBUG
 	#define DEBUG_PRINT(...) { DEBUG_PRINTER.print(__VA_ARGS__); }
 	#define DEBUG_PRINTLN(...) { DEBUG_PRINTER.println(__VA_ARGS__); }
